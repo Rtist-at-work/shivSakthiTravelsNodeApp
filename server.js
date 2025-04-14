@@ -13,10 +13,11 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-  origin: 'https://shivsakthitravels.com', // Allow only your frontend domain
+  origin: ['https://shivsakthitravels.com', 'https://www.shivsakthitravels.com'],
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 
 // Parse JSON bodies
