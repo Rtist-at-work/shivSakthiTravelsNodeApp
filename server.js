@@ -13,7 +13,7 @@ const app = express();
 
 // Enable CORS for your frontend
 app.use(cors({
-  origin: ['https://shivsakthitravels.com', 'https://www.shivsakthitravels.com'],
+  origin: ['https://shivsakthitravels.com', 'https://www.shivsakthitravels.com','http://localhost:5173'],
   methods: ['GET', 'POST'],
   // allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -41,12 +41,12 @@ mongoose.connect(process.env.MONGO_URL, {
 
 // Load SSL only in production
 if (process.env.NODE_ENV === 'production') {
-  const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
-  };
+  // const options = {
+  //   key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
+  //   cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
+  // };
 
-  https.createServer(options, app).listen(PORT, () => {
+  https.createServer(app).listen(PORT, () => {
     console.log(`🚀 Production server running at https://shivsakthitravels.com:${PORT}`);
   });
 } else {
