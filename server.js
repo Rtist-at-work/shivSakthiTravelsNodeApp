@@ -1,4 +1,5 @@
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -6,23 +7,21 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const tariffRoute = require('./routes/tariff.route');
 
-// Load environment variables from .env file
+// Load environment variables
 dotenv.config();
 
 const app = express();
 
-// Enable CORS for your frontend
+// CORS
 app.use(cors({
-  origin: ['https://shivsakthitravels.com', 'https://www.shivsakthitravels.com','http://localhost:5173'],
-  methods: ['GET', 'POST'],
-  // allowedHeaders: ['Content-Type', 'Authorization']
+  origin: ['https://shivsakthitravels.com', 'https://www.shivsakthitravels.com'],
+  methods: ['GET', 'POST']
 }));
 
-
-// Parse JSON bodies
+// Body parser
 app.use(express.json());
 
-// Define the tariff route
+// API routes
 app.use('/api/tariffs', tariffRoute);
 
 // MongoDB connection
@@ -30,27 +29,38 @@ mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => {
-    console.log('✅ MongoDB Connected');
-  })
-  .catch((err) => {
-    console.log('❌ MongoDB Connection Failed:', err);
-  });
+.then(() => console.log('✅ MongoDB Connected'))
+.catch(err => console.error('❌ MongoDB Connection Failed:', err));
 
-  const PORT = process.env.PORT
+// Port
+const HTTPS_PORT = 443;
+const HTTP_PORT = 80;
 
-// Load SSL only in production
+// Production environment
 if (process.env.NODE_ENV === 'production') {
+  // SSL certs
   const options = {
     key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
   };
 
-  https.createServer(options, app).listen(PORT, () => {
-    console.log(`🚀 Production server running at https://shivsakthitravels.com:${PORT}`);
+  // Start HTTPS server
+  https.createServer(options, app).listen(HTTPS_PORT, () => {
+    console.log(`🚀 Production HTTPS server running at https://shivsakthitravels.com`);
   });
+
+  // Redirect HTTP to HTTPS
+  http.createServer((req, res) => {
+    res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+    res.end();
+  }).listen(HTTP_PORT, () => {
+    console.log('🌐 HTTP server redirecting to HTTPS');
+  });
+
 } else {
-  app.listen(PORT, () => {
-    console.log(`🚀 Dev server running at http://localhost:${PORT}`);
+  // Development mode
+  const DEV_PORT = 5000;
+  app.listen(DEV_PORT, () => {
+    console.log(`🚀 Dev server running at http://localhost:${DEV_PORT}`);
   });
 }
