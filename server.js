@@ -12,11 +12,13 @@ dotenv.config();
 const app = express();
 
 // Enable CORS for your frontend
-app.use(cors({
-  origin: 'https://shivsakthitravels.com', // Allow only your frontend domain
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// app.use(cors({
+//   origin: 'https://shivsakthitravels.com', // Allow only your frontend domain
+//   methods: ['GET', 'POST'],
+//   allowedHeaders: ['Content-Type', 'Authorization']
+// }));
+
+app.use(cors())
 
 // Parse JSON bodies
 app.use(express.json());
@@ -36,14 +38,19 @@ mongoose.connect(process.env.MONGO_URL, {
     console.log('❌ MongoDB Connection Failed:', err);
   });
 
-// SSL Certificate options (assumes you are using Let's Encrypt certificates)
-const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
-};
+// // SSL Certificate options (assumes you are using Let's Encrypt certificates)
+// const options = {
+//   key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
+//   cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
+// };
 
 // Start the HTTPS server
 const PORT = process.env.PORT || 5000;
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`🚀 Backend is running on https://localhost:${PORT}`);
+// https.createServer( app).listen(PORT, () => {
+//   console.log(`🚀 Backend is running on https://localhost:${PORT}`);
+// });
+
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
