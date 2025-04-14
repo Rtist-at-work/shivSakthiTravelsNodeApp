@@ -23,7 +23,7 @@ app.use(cors({
 app.use(express.json());
 
 // Define the tariff route
-app.use('/tariffs', tariffRoute);
+app.use('/api/tariffs', tariffRoute);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URL, {
@@ -41,12 +41,12 @@ mongoose.connect(process.env.MONGO_URL, {
 
 // Load SSL only in production
 if (process.env.NODE_ENV === 'production') {
-  // const options = {
-  //   key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
-  //   cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
-  // };
+  const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/shivsakthitravels.com/fullchain.pem'),
+  };
 
-  https.createServer(app).listen(PORT, () => {
+  https.createServer(options, app).listen(PORT, () => {
     console.log(`🚀 Production server running at https://shivsakthitravels.com:${PORT}`);
   });
 } else {
