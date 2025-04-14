@@ -37,6 +37,8 @@ mongoose.connect(process.env.MONGO_URL, {
     console.log('❌ MongoDB Connection Failed:', err);
   });
 
+  const PORT = process.env.PORT
+
 // Load SSL only in production
 if (process.env.NODE_ENV === 'production') {
   const options = {
